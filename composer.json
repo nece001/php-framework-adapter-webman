@@ -1,0 +1,21 @@
+{
+    "name": "nece001/php-framework-adapter-webman",
+    "description": "php webman框架适配",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Nece\\Framework\\Adapter\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "nece001",
+            "email": "nece001@163.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.0",
+        "nece001/php-framework-adapter": "^2.0"
+    }
+}
