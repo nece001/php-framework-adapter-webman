@@ -959,6 +959,36 @@ class Query implements DbAdapterQuery
         return $this->query->getLastSql();
     }
 
+    public function startTrans(): void
+    {
+        $this->query->startTrans();
+    }
+
+    public function commit(): void
+    {
+        $this->query->commit();
+    }
+
+    public function rollback(): void
+    {
+        $this->query->rollback();
+    }
+
+    public function transaction(callable $callback)
+    {
+        return $this->query->transaction($callback);
+    }
+
+    public function update(array $data): int
+    {
+        return $this->query->update($data);
+    }
+
+    public function delete($data = null): int
+    {
+        return $this->query->delete($data);
+    }
+
     /**
      * 转换为字符串（SQL语句）
      *
