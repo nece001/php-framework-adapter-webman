@@ -6,7 +6,10 @@ use Nece\Framework\Adapter\Contract\Command as ContractCommand;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 class Command extends SymfonyCommand implements ContractCommand
 {
@@ -21,19 +24,6 @@ class Command extends SymfonyCommand implements ContractCommand
     protected $output;
 
     /**
-     * @var SymfonyStyle
-     */
-    protected $io;
-
-    /**
-     * 配置命令
-     */
-    protected function configure()
-    {
-        // 子类实现
-    }
-
-    /**
      * 执行命令
      *
      * @param InputInterface $input
@@ -44,7 +34,6 @@ class Command extends SymfonyCommand implements ContractCommand
     {
         $this->input = $input;
         $this->output = $output;
-        $this->io = new SymfonyStyle($input, $output);
         $this->handle();
         return 0;
     }
@@ -90,7 +79,9 @@ class Command extends SymfonyCommand implements ContractCommand
      */
     public function ask(string $question, $default = null)
     {
-        return $this->io->ask($question, $default);
+        $helper = $this->getHelper('question');
+        $questionObj = new Question($question, $default);
+        return $helper->ask($this->input, $this->output, $questionObj);
     }
 
     /**
@@ -102,7 +93,9 @@ class Command extends SymfonyCommand implements ContractCommand
      */
     public function confirm(string $question, bool $default = false): bool
     {
-        return $this->io->confirm($question, $default);
+        $helper = $this->getHelper('question');
+        $questionObj = new ConfirmationQuestion($question, $default);
+        return $helper->ask($this->input, $this->output, $questionObj);
     }
 
     /**
@@ -115,7 +108,9 @@ class Command extends SymfonyCommand implements ContractCommand
      */
     public function choice(string $question, array $choices, $default = null)
     {
-        return $this->io->choice($question, $choices, $default);
+        $helper = $this->getHelper('question');
+        $questionObj = new ChoiceQuestion($question, $choices, $default);
+        return $helper->ask($this->input, $this->output, $questionObj);
     }
 
     /**
@@ -126,7 +121,9 @@ class Command extends SymfonyCommand implements ContractCommand
      */
     public function newLine(int $count = 1): void
     {
-        $this->io->newLine($count);
+        for ($i = 0; $i < $count; $i++) {
+            $this->output->writeln('');
+        }
     }
 
     /**
@@ -159,7 +156,9 @@ class Command extends SymfonyCommand implements ContractCommand
      */
     public function info(string $message): void
     {
-        $this->io->info($message);
+        $style = new OutputFormatterStyle('green');
+        $this->output->getFormatter()->setStyle('info', $style);
+        $this->output->writeln('<info>' . $message . '</info>');
     }
 
     /**
@@ -170,6 +169,8 @@ class Command extends SymfonyCommand implements ContractCommand
      */
     public function comment(string $message): void
     {
+        $style = new OutputFormatterStyle('blue');
+        $this->output->getFormatter()->setStyle('comment', $style);
         $this->output->writeln('<comment>' . $message . '</comment>');
     }
 
@@ -181,7 +182,9 @@ class Command extends SymfonyCommand implements ContractCommand
      */
     public function question(string $question): void
     {
-        $this->io->question($question);
+        $style = new OutputFormatterStyle('cyan');
+        $this->output->getFormatter()->setStyle('question', $style);
+        $this->output->writeln('<question>' . $question . '</question>');
     }
 
     /**
@@ -192,7 +195,9 @@ class Command extends SymfonyCommand implements ContractCommand
      */
     public function warn(string $message): void
     {
-        $this->io->warning($message);
+        $style = new OutputFormatterStyle('yellow');
+        $this->output->getFormatter()->setStyle('warning', $style);
+        $this->output->writeln('<warning>' . $message . '</warning>');
     }
 
     /**
@@ -203,6 +208,8 @@ class Command extends SymfonyCommand implements ContractCommand
      */
     public function error(string $message): void
     {
-        $this->io->error($message);
+        $style = new OutputFormatterStyle('red');
+        $this->output->getFormatter()->setStyle('error', $style);
+        $this->output->writeln('<error>' . $message . '</error>');
     }
 }
