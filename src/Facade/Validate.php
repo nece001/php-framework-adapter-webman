@@ -2,7 +2,7 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Validate as ContractValidate;
+use Nece\Framework\Adapter\Contract\Facade\Validate as ContractValidate;
 use support\validation\Validator;
 
 class Validate implements ContractValidate

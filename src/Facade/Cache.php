@@ -2,21 +2,11 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Cache as ContractCache;
-use support\Container;
+use Nece\Framework\Adapter\Contract\Facade\Cache as ContractCache;
+use support\Cache as WebmanCache;
 
 class Cache implements ContractCache
 {
-    /**
-     * 获取缓存实例
-     *
-     * @return \Psr\SimpleCache\CacheInterface
-     */
-    protected static function getCache()
-    {
-        return Container::get('cache');
-    }
-
     /**
      * 获取缓存
      *
@@ -26,7 +16,7 @@ class Cache implements ContractCache
      */
     public static function get(string $key, $default = null)
     {
-        return static::getCache()->get($key, $default);
+        return WebmanCache::get($key, $default);
     }
 
     /**
@@ -39,7 +29,7 @@ class Cache implements ContractCache
      */
     public static function set(string $key, mixed $value, $ttl = null): bool
     {
-        return static::getCache()->set($key, $value, $ttl);
+        return WebmanCache::set($key, $value, $ttl);
     }
 
     /**
@@ -50,7 +40,7 @@ class Cache implements ContractCache
      */
     public static function delete(string $key): bool
     {
-        return static::getCache()->delete($key);
+        return WebmanCache::delete($key);
     }
 
     /**
@@ -60,7 +50,7 @@ class Cache implements ContractCache
      */
     public static function clear(): bool
     {
-        return static::getCache()->clear();
+        return WebmanCache::clear();
     }
 
     /**
@@ -72,7 +62,7 @@ class Cache implements ContractCache
      */
     public static function getMultiple(iterable $keys, $default = null): iterable
     {
-        return static::getCache()->getMultiple($keys, $default);
+        return WebmanCache::getMultiple($keys, $default);
     }
 
     /**
@@ -84,7 +74,7 @@ class Cache implements ContractCache
      */
     public static function setMultiple(iterable $values, $ttl = null): bool
     {
-        return static::getCache()->setMultiple($values, $ttl);
+        return WebmanCache::setMultiple($values, $ttl);
     }
 
     /**
@@ -95,7 +85,7 @@ class Cache implements ContractCache
      */
     public static function deleteMultiple(iterable $keys): bool
     {
-        return static::getCache()->deleteMultiple($keys);
+        return WebmanCache::deleteMultiple($keys);
     }
 
     /**
@@ -106,6 +96,6 @@ class Cache implements ContractCache
      */
     public static function has(string $key): bool
     {
-        return static::getCache()->has($key);
+        return WebmanCache::has($key);
     }
 }

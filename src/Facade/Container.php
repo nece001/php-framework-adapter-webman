@@ -2,7 +2,7 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Container as ContractContainer;
+use Nece\Framework\Adapter\Contract\Facade\Container as ContractContainer;
 use support\Container as WebmanContainer;
 
 class Container implements ContractContainer

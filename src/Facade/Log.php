@@ -1,7 +1,7 @@
 <?php
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Log as ContractLog;
+use Nece\Framework\Adapter\Contract\Facade\Log as ContractLog;
 use support\Log as WebmanLog;
 use Psr\Log\LoggerInterface;
 

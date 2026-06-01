@@ -3,12 +3,12 @@
 namespace Nece\Framework\Adapter;
 
 use Nece\Framework\Adapter\Contract\Controller as ContractController;
-use Nece\Framework\Adapter\Contract\Request;
+use Nece\Framework\Adapter\Request;
 use support\Response;
 
 class Controller implements ContractController
 {
-    private Request $request;
+    private  $request;
 
     private $cookies = [];
 
@@ -19,7 +19,7 @@ class Controller implements ContractController
      */
     public function request(): Request
     {
-        if ($this->request === null) {
+        if (!$this->request) {
             $this->request = new Request();
         }
         return $this->request;
@@ -130,7 +130,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 获取 Session
+     * 获取 Session 对象
      *
      * @param string $name Session键名
      * @param mixed $default 默认值
@@ -138,7 +138,11 @@ class Controller implements ContractController
      */
     public function session(string $name = '', $default = null)
     {
-        return $this->request()->session()->get($name, $default);
+        $session = $this->request()->session();
+        if ($name === '') {
+            return $session;
+        }
+        return $session->get($name, $default);
     }
 
     /**

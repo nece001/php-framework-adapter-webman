@@ -2,7 +2,7 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Db as ContractDb;
+use Nece\Framework\Adapter\Contract\Facade\Db as ContractDb;
 use think\Db;
 
 class Db implements ContractDb
