@@ -2,6 +2,7 @@
 
 namespace Nece\Framework\Adapter\DbAdapter;
 
+use Closure;
 use Nece\Framework\Adapter\Contract\DbAdapter\Query as DbAdapterQuery;
 use Nece\Framework\Adapter\Paginator;
 use think\db\Query as ThinkQuery;
@@ -691,9 +692,14 @@ class Query implements DbAdapterQuery
      *
      * @return Model[]
      */
-    public function select($data = null): array
+    public function select(array $data = []): array
     {
-        $result = $this->query->select($data);
+        // 如果数据为空数组，调用不带参数的 select()
+        if (empty($data)) {
+            $result = $this->query->select();
+        } else {
+            $result = $this->query->select($data);
+        }
 
         // 如果是 \think\Collection，转换为 Model 实例
         if ($result instanceof \think\Collection) {

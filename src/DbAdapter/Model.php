@@ -2,20 +2,19 @@
 
 namespace Nece\Framework\Adapter\DbAdapter;
 
+use Nece\Framework\Adapter\BaseModel;
 use Nece\Framework\Adapter\Contract\DbAdapter\Model as DbAdapterModel;
-use Nece\Framework\Adapter\Contract\DbAdapter\ModelRelationQuery;
-use support\think\Model as ThinkModel;
 
 class Model implements DbAdapterModel
 {
     /**
      * 数据库模型
      *
-     * @var ThinkModel
+     * @var BaseModel
      */
-    private ThinkModel $model;
+    private BaseModel $model;
 
-    public function __construct(ThinkModel $model)
+    public function __construct(BaseModel $model)
     {
         $this->model = $model;
     }
@@ -82,9 +81,11 @@ class Model implements DbAdapterModel
     {
         $data = $this->model->getData();
         if ($withRelation) {
-            // 获取关联数据
-            $relationData = $this->model->getRelation();
-            $data = array_merge($data, $relationData);
+            // 获取关联数据（如果方法存在）
+            if (method_exists($this->model, 'getRelation')) {
+                $relationData = $this->model->getRelation();
+                $data = array_merge($data, $relationData);
+            }
         }
         return $data;
     }
@@ -98,7 +99,9 @@ class Model implements DbAdapterModel
      */
     public function hasAttr(string $name): bool
     {
-        return $this->model->hasAttr($name);
+        // 使用通用方式判断属性是否存在
+        $data = $this->model->getData();
+        return array_key_exists($name, $data);
     }
 
     /**
@@ -128,7 +131,11 @@ class Model implements DbAdapterModel
         if (!empty($data)) {
             $this->model->data($data);
         }
-        return $this->model->forceUpdate();
+        // 如果存在 forceUpdate 方法则调用，否则使用普通 save
+        if (method_exists($this->model, 'forceUpdate')) {
+            return $this->model->forceUpdate();
+        }
+        return $this->model->save();
     }
 
     /**
@@ -147,36 +154,6 @@ class Model implements DbAdapterModel
     }
 
     /**
-     * 创建新记录.
-     *
-     * @param array $data 数据
-     *
-     * @return Model
-     */
-    public static function create(array $data): DbAdapterModel
-    {
-        // 获取模型类名
-        $modelClass = get_called_class();
-        // 创建底层模型实例
-        $thinkModel = ThinkModel::create($data);
-        return new self($thinkModel);
-    }
-
-    /**
-     * 更新记录.
-     *
-     * @param array $data      更新数据
-     * @param mixed $condition 更新条件
-     *
-     * @return int
-     */
-    public static function update(array $data, $condition = null): int
-    {
-        $result = ThinkModel::update($data, $condition);
-        return $result ? 1 : 0;
-    }
-
-    /**
      * 获取原始数据.
      *
      * @param string $name 属性名（留空返回全部原始数据）
@@ -185,17 +162,12 @@ class Model implements DbAdapterModel
      */
     public function getOriginal(string $name = null)
     {
-        return $this->model->getOriginal($name);
-    }
-
-    /**
-     * 判断是否为新增数据.
-     *
-     * @return bool
-     */
-    public function isNewRecord(): bool
-    {
-        return $this->model->isNewRecord();
+        // 使用 getData 作为替代，因为 think\Model 没有 getOriginal 方法
+        $data = $this->model->getData();
+        if ($name !== null) {
+            return $data[$name] ?? null;
+        }
+        return $data;
     }
 
     /**
@@ -248,7 +220,13 @@ class Model implements DbAdapterModel
      */
     public function getModelName(): string
     {
-        return $this->model->getName();
+        // 尝试多种方式获取模型名称
+        if (method_exists($this->model, 'getName')) {
+            return $this->model->getName();
+        }
+        // 通过类名推断
+        $className = get_class($this->model);
+        return basename(str_replace('\\', '/', $className));
     }
 
     /**
@@ -260,7 +238,10 @@ class Model implements DbAdapterModel
      */
     public function getError(bool $all = false)
     {
-        return $this->model->getError($all);
+        if (method_exists($this->model, 'getError')) {
+            return $this->model->getError($all);
+        }
+        return null;
     }
 
     /**
@@ -272,7 +253,9 @@ class Model implements DbAdapterModel
      */
     public function setError($error): DbAdapterModel
     {
-        $this->model->setError($error);
+        if (method_exists($this->model, 'setError')) {
+            $this->model->setError($error);
+        }
         return $this;
     }
 
@@ -288,7 +271,10 @@ class Model implements DbAdapterModel
      */
     public function validate(array $data = [], $rules = [], array $msg = [], string $scene = ''): bool
     {
-        return $this->model->validate($data, $rules, $msg, $scene);
+        if (method_exists($this->model, 'validate')) {
+            return $this->model->validate($data, $rules, $msg, $scene);
+        }
+        return true;
     }
 
     /**
@@ -300,7 +286,9 @@ class Model implements DbAdapterModel
      */
     public function autoWriteTimestamp(bool $auto = true): DbAdapterModel
     {
-        $this->model->autoWriteTimestamp($auto);
+        if (method_exists($this->model, 'autoWriteTimestamp')) {
+            $this->model->autoWriteTimestamp($auto);
+        }
         return $this;
     }
 
@@ -309,9 +297,10 @@ class Model implements DbAdapterModel
      *
      * @return ModelRelationQuery
      */
-    public static function query(): ModelRelationQuery
+    public function query(): ModelRelationQuery
     {
-        $query = ThinkModel::query();
+        // 使用 db() 方法获取查询对象
+        $query = $this->model->db();
         return new ModelRelationQuery($query);
     }
 }

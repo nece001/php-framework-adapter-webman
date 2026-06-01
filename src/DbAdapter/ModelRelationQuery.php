@@ -135,62 +135,6 @@ class ModelRelationQuery extends Query implements DbAdapterModelRelationQuery
     }
 
     /**
-     * 查询单条记录.
-     *
-     * @param mixed $data 主键值或查询条件
-     *
-     * @return mixed
-     */
-    public static function find($data = null)
-    {
-        // 静态方法需要特殊处理，这里返回null或抛出异常
-        // 实际应用中应通过模型调用
-        return null;
-    }
-
-    /**
-     * 查询多条记录.
-     *
-     * @param mixed $data 查询条件
-     *
-     * @return array
-     */
-    public static function select($data = null): array
-    {
-        // 静态方法需要特殊处理，这里返回空数组或抛出异常
-        // 实际应用中应通过模型调用
-        return [];
-    }
-
-    /**
-     * 获取或创建记录.
-     *
-     * @param array $where 查询条件
-     * @param array $data  创建数据
-     *
-     * @return mixed
-     */
-    public static function firstOrCreate(array $where, array $data = [])
-    {
-        // 静态方法需要特殊处理
-        return null;
-    }
-
-    /**
-     * 更新或创建记录.
-     *
-     * @param array $where 查询条件
-     * @param array $data  更新/创建数据
-     *
-     * @return mixed
-     */
-    public static function updateOrCreate(array $where, array $data = [])
-    {
-        // 静态方法需要特殊处理
-        return null;
-    }
-
-    /**
      * 设置查询范围.
      *
      * @param string $scope 范围名称
