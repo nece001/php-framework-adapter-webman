@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
+        "php": ">=8.0",
         "webman/cache": "^2.1",
         "phpoption/phpoption": "^1.9",
         "vlucas/phpdotenv": "^5.6",
