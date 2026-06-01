@@ -3,7 +3,7 @@
 namespace Nece\Framework\Adapter\Facade;
 
 use Nece\Framework\Adapter\Contract\Facade\Db as ContractDb;
-use think\Db;
+use think\facade\Db as ThinkDb;
 
 class Db implements ContractDb
 {
@@ -16,7 +16,7 @@ class Db implements ContractDb
      */
     public static function raw($value)
     {
-        return Db::raw($value);
+        return ThinkDb::raw($value);
     }
 
     /**
@@ -30,7 +30,7 @@ class Db implements ContractDb
      */
     public static function rawFunc(string $func, string $field, string $alias)
     {
-        return Db::raw($func . '(`' . $field . '`) AS `' . $alias . '`');
+        return ThinkDb::raw($func . '(`' . $field . '`) AS `' . $alias . '`');
     }
 
     /**
@@ -43,7 +43,7 @@ class Db implements ContractDb
      */
     public static function rawCount(string $field, string $alias)
     {
-        return Db::raw('COUNT(`' . $field . '`) AS `' . $alias . '`');
+        return ThinkDb::raw('COUNT(`' . $field . '`) AS `' . $alias . '`');
     }
 
     /**
@@ -56,7 +56,7 @@ class Db implements ContractDb
      */
     public static function rawSum(string $field, string $alias)
     {
-        return Db::raw('SUM(`' . $field . '`) AS `' . $alias . '`');
+        return ThinkDb::raw('SUM(`' . $field . '`) AS `' . $alias . '`');
     }
 
     /**
@@ -69,7 +69,7 @@ class Db implements ContractDb
      */
     public static function rawAvg(string $field, string $alias)
     {
-        return Db::raw('AVG(`' . $field . '`) AS `' . $alias . '`');
+        return ThinkDb::raw('AVG(`' . $field . '`) AS `' . $alias . '`');
     }
 
     /**
@@ -82,7 +82,7 @@ class Db implements ContractDb
      */
     public static function rawMin(string $field, string $alias)
     {
-        return Db::raw('MIN(`' . $field . '`) AS `' . $alias . '`');
+        return ThinkDb::raw('MIN(`' . $field . '`) AS `' . $alias . '`');
     }
 
     /**
@@ -95,7 +95,7 @@ class Db implements ContractDb
      */
     public static function rawMax(string $field, string $alias)
     {
-        return Db::raw('MAX(`' . $field . '`) AS `' . $alias . '`');
+        return ThinkDb::raw('MAX(`' . $field . '`) AS `' . $alias . '`');
     }
 
     /**
@@ -105,7 +105,7 @@ class Db implements ContractDb
      */
     public static function startTrans(): void
     {
-        Db::startTrans();
+        ThinkDb::startTrans();
     }
 
     /**
@@ -115,7 +115,7 @@ class Db implements ContractDb
      */
     public static function commit(): void
     {
-        Db::commit();
+        ThinkDb::commit();
     }
 
     /**
@@ -125,7 +125,7 @@ class Db implements ContractDb
      */
     public static function rollback(): void
     {
-        Db::rollback();
+        ThinkDb::rollback();
     }
 
     /**
@@ -137,7 +137,7 @@ class Db implements ContractDb
      */
     public static function transaction(callable $callback)
     {
-        return Db::transaction($callback);
+        return ThinkDb::transaction($callback);
     }
 
     /**
@@ -149,6 +149,6 @@ class Db implements ContractDb
      */
     public static function execute(string $sql)
     {
-        return Db::execute($sql);
+        return ThinkDb::execute($sql);
     }
 }

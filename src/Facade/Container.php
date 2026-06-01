@@ -24,7 +24,8 @@ class Container implements ContractContainer
      */
     public static function getApp()
     {
-        return WebmanContainer::getInstance();
+        // webman没有直接的应用实例，返回容器实例
+        return WebmanContainer::instance();
     }
 
     /**
