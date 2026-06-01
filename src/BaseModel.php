@@ -2,6 +2,6 @@
 
 namespace Nece\Framework\Adapter;
 
-use think\Model;
+use support\think\Model;
 
 class BaseModel extends Model {}

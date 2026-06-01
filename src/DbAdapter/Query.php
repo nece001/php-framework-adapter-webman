@@ -656,7 +656,7 @@ class Query implements DbAdapterQuery
         if ($result instanceof \support\think\Model) {
             return new Model($result);
         }
-        return null;
+        return $result;
     }
 
     /**
@@ -694,19 +694,15 @@ class Query implements DbAdapterQuery
      */
     public function select(array $data = []): array
     {
-        // 如果数据为空数组，调用不带参数的 select()
-        if (empty($data)) {
-            $result = $this->query->select();
-        } else {
-            $result = $this->query->select($data);
-        }
-
+        $result = $this->query->select($data);
         // 如果是 \think\Collection，转换为 Model 实例
         if ($result instanceof \think\Collection) {
             $models = [];
             foreach ($result as $item) {
                 if ($item instanceof \support\think\Model) {
                     $models[] = new Model($item);
+                } else {
+                    $models[] = $item;
                 }
             }
             return $models;
@@ -734,6 +730,8 @@ class Query implements DbAdapterQuery
             foreach ($items as $item) {
                 if ($item instanceof \support\think\Model) {
                     $models[] = new Model($item);
+                } else {
+                    $models[] = $item;
                 }
             }
             // 调用回调函数
@@ -744,36 +742,33 @@ class Query implements DbAdapterQuery
     /**
      * 分页查询.
      *
-     * @param int   $page     当前页码
-     * @param int   $listRows 每页数量
-     * @param array $options  额外选项
+     * @param int   $page      当前页码
+     * @param int   $page_size 每页数量
+     * @param array $options   额外选项
      *
      * @return Paginator
      */
-    public function paginate(int $page = 1, int $listRows = 15, array $options = []): Paginator
+    public function paginate(int $page = 1, int $page_size = 15, array $options = []): Paginator
     {
-        // 设置分页参数
-        $this->query->page($page, $listRows);
-        // 获取总记录数
-        $total = $this->query->count();
-        // 执行查询
-        $result = $this->query->select();
+        // 使用框架提供的分页功能
+        $thinkPaginator = $this->query->paginate($page_size, false, ['page' => $page]);
 
-        // 如果是 \think\Collection，转换为 Model 实例
-        if ($result instanceof \think\Collection) {
-            $items = [];
-            foreach ($result as $item) {
-                if ($item instanceof \support\think\Model) {
-                    $items[] = new Model($item);
-                }
+        // 获取分页数据
+        $total = $thinkPaginator->total();
+        $currentPage = $thinkPaginator->currentPage();
+        $items = [];
+
+        // 转换为 Model 实例
+        foreach ($thinkPaginator->items() as $item) {
+            if ($item instanceof \support\think\Model) {
+                $items[] = new Model($item);
+            } else {
+                $items[] = $item;
             }
-        } else {
-            // 如果是数组，直接使用
-            $items = (array) $result;
         }
 
         // 创建通用分页器
-        return new Paginator($items, $total, $page, $listRows);
+        return new Paginator($items, $total, $currentPage, $page_size);
     }
 
     /**
@@ -952,6 +947,16 @@ class Query implements DbAdapterQuery
     {
         $this->query->when($condition, $query, $otherwise);
         return $this;
+    }
+
+    /**
+     * 获取最后执行的SQL语句.
+     *
+     * @return string
+     */
+    public function getLastSql(): string
+    {
+        return $this->query->getLastSql();
     }
 
     /**
