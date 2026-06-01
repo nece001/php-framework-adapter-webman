@@ -15,7 +15,7 @@ class Controller implements ContractController
     /**
      * 获取当前请求
      * 
-     * @return \Webman\Http\Request|upport\Request|null
+     * @return Request
      */
     public function request(): Request
     {
