@@ -26,11 +26,16 @@ class Controller implements ContractController
     }
 
     /**
-     * 渲染视图
-     * 
-     * @param string $view 视图路径
-     * @param array $data 视图数据
-     * @return Response
+     * @inheritDoc
+     */
+    public function response(string $body = '', int $status = 200, array $headers = [])
+    {
+        $response = new Response($status, $headers, $body);
+        return $this->addCookiesToResponse($response);
+    }
+
+    /**
+     * @inheritDoc
      */
     public function render(string $view, $data)
     {
@@ -38,11 +43,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 重定向
-     * 
-     * @param string $url 重定向URL
-     * @param int $code HTTP状态码
-     * @return Response
+     * @inheritDoc
      */
     public function redirect(string $url, int $code = 302)
     {
@@ -50,12 +51,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 返回 JSON 响应
-     *
-     * @param mixed $data 数据
-     * @param int $code HTTP状态码
-     * @param array $headers 响应头
-     * @return Response
+     * @inheritDoc
      */
     public function json($data, int $code = 200, array $headers = [])
     {
@@ -63,12 +59,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 返回 XML 响应
-     *
-     * @param mixed $data 数据
-     * @param int $code HTTP状态码
-     * @param array $headers 响应头
-     * @return Response
+     * @inheritDoc
      */
     public function xml($data, int $code = 200, array $headers = [])
     {
@@ -76,12 +67,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 文件下载
-     *
-     * @param string $file 文件路径
-     * @param string|null $name 下载文件名
-     * @param array $headers 响应头
-     * @return Response
+     * @inheritDoc
      */
     public function download(string $file, string $name = null, array $headers = [])
     {
@@ -93,12 +79,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 流式响应
-     *
-     * @param resource $stream 数据流
-     * @param int $code HTTP状态码
-     * @param array $headers 响应头
-     * @return Response
+     * @inheritDoc
      */
     public function stream($stream, int $code = 200, array $headers = [])
     {
@@ -106,10 +87,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 向响应对象添加所有cookie
-     *
-     * @param Response $response
-     * @return Response
+     * @inheritDoc
      */
     protected function addCookiesToResponse(Response $response): Response
     {
@@ -130,11 +108,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 获取 Session 对象
-     *
-     * @param string $name Session键名
-     * @param mixed $default 默认值
-     * @return mixed
+     * @inheritDoc
      */
     public function session(string $name = '', $default = null)
     {
@@ -146,11 +120,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 设置 Session
-     *
-     * @param string $name Session键名
-     * @param mixed $value Session值
-     * @return $this
+     * @inheritDoc
      */
     public function setSession(string $name, $value)
     {
@@ -159,10 +129,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 删除 Session
-     *
-     * @param string $name Session键名
-     * @return $this
+     * @inheritDoc
      */
     public function deleteSession(string $name)
     {
@@ -171,18 +138,9 @@ class Controller implements ContractController
     }
 
     /**
-     * 设置 Cookie
-     *
-     * @param string $name Cookie名称
-     * @param string $value Cookie值
-     * @param int $expire 过期时间（秒）
-     * @param string $path 路径
-     * @param string $domain 域名
-     * @param bool $secure 是否安全连接
-     * @param bool $httpOnly 是否仅HTTP访问
-     * @return $this
+     * @inheritDoc
      */
-    public function cookie(string $name, string $value = '', int $expire = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httpOnly = true)
+    public function setCookie(string $name, string $value = '', int $expire = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httpOnly = true)
     {
         $this->cookies[$name] = [
             'name' => $name,
@@ -197,12 +155,7 @@ class Controller implements ContractController
     }
 
     /**
-     * 删除 Cookie
-     *
-     * @param string $name Cookie名称
-     * @param string $path 路径
-     * @param string $domain 域名
-     * @return $this
+     * @inheritDoc
      */
     public function deleteCookie(string $name, string $path = '/', string $domain = '')
     {
