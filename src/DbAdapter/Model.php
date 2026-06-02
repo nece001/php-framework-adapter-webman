@@ -5,7 +5,7 @@ namespace Nece\Framework\Adapter\DbAdapter;
 use Nece\Framework\Adapter\BaseModel;
 use Nece\Framework\Adapter\Contract\DbAdapter\Model as DbAdapterModel;
 
-class Model implements DbAdapterModel
+class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
 {
     /**
      * 数据库模型
@@ -54,7 +54,34 @@ class Model implements DbAdapterModel
      */
     public function getAttr(string $name)
     {
-        return $this->model->getAttr($name);
+        $value = $this->model->getAttr($name);
+        return $this->convertModel($value);
+    }
+
+    /**
+     * 递归转换模型实例为适配器的 Model 类型.
+     *
+     * @param mixed $value 要转换的值
+     *
+     * @return mixed
+     */
+    private function convertModel($value)
+    {
+        // 如果返回的是模型实例，转换为适配器的 Model 类型
+        if ($value instanceof \support\think\Model) {
+            return new Model($value);
+        }
+
+        // 如果返回的是数组或集合，遍历并递归转换其中的模型实例
+        if (is_array($value) || $value instanceof \think\Collection) {
+            $result = [];
+            foreach ($value as $item) {
+                $result[] = $this->convertModel($item);
+            }
+            return $result;
+        }
+
+        return $value;
     }
 
     /**
@@ -71,37 +98,16 @@ class Model implements DbAdapterModel
     }
 
     /**
-     * 获取全部属性数据.
+     * 获取属性数据.
      *
-     * @param bool $withRelation 是否包含关联数据
+     * @param string|null $name 属性名（留空返回全部数据）
      *
-     * @return array
+     * @return array|mixed
      */
-    public function getData(bool $withRelation = false): array
+    public function getData(?string $name = null)
     {
-        $data = $this->model->getData();
-        if ($withRelation) {
-            // 获取关联数据（如果方法存在）
-            if (method_exists($this->model, 'getRelation')) {
-                $relationData = $this->model->getRelation();
-                $data = array_merge($data, $relationData);
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * 判断属性是否存在.
-     *
-     * @param string $name 属性名
-     *
-     * @return bool
-     */
-    public function hasAttr(string $name): bool
-    {
-        // 使用通用方式判断属性是否存在
-        $data = $this->model->getData();
-        return array_key_exists($name, $data);
+        $value = $this->model->getData($name);
+        return $this->convertModel($value);
     }
 
     /**
@@ -302,5 +308,81 @@ class Model implements DbAdapterModel
         // 使用 db() 方法获取查询对象
         $query = $this->model->db();
         return new ModelRelationQuery($query);
+    }
+
+    public function toArray(): array
+    {
+        return $this->model->toArray();
+    }
+
+    public function __get(string $name)
+    {
+        return $this->getAttr($name);
+    }
+
+    public function __set(string $name, $value)
+    {
+        $this->setAttr($name, $value);
+    }
+
+    /**
+     * JsonSerializable 接口实现
+     *
+     * @return mixed
+     */
+    public function jsonSerialize(): mixed
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * ArrayAccess 接口实现 - 检查偏移量是否存在
+     *
+     * @param mixed $offset
+     *
+     * @return bool
+     */
+    public function offsetExists(mixed $offset): bool
+    {
+        return array_key_exists($offset, $this->model->getData());
+    }
+
+    /**
+     * ArrayAccess 接口实现 - 获取偏移量对应的值
+     *
+     * @param mixed $offset
+     *
+     * @return mixed
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->getAttr($offset);
+    }
+
+    /**
+     * ArrayAccess 接口实现 - 设置偏移量对应的值
+     *
+     * @param mixed $offset
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        $this->setAttr($offset, $value);
+    }
+
+    /**
+     * ArrayAccess 接口实现 - 删除偏移量对应的值
+     *
+     * @param mixed $offset
+     *
+     * @return void
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        $data = $this->model->getData();
+        unset($data[$offset]);
+        $this->model->data($data);
     }
 }
