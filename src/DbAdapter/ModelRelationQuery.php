@@ -8,12 +8,7 @@ use think\db\Query as ThinkQuery;
 class ModelRelationQuery extends Query implements DbAdapterModelRelationQuery
 {
     /**
-     * 预加载关联数据.
-     *
-     * @param mixed $relation 关联方法名（支持字符串、数组、闭包）
-     * @param mixed $callback 回调函数
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function with($relation, $callback = null): DbAdapterModelRelationQuery
     {
@@ -22,13 +17,7 @@ class ModelRelationQuery extends Query implements DbAdapterModelRelationQuery
     }
 
     /**
-     * 预加载关联数据（JOIN方式）.
-     *
-     * @param mixed $relation 关联方法名
-     * @param mixed $callback 回调函数
-     * @param bool  $joinType 是否使用LEFT JOIN
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function withJoin($relation, $callback = null, bool $joinType = false): DbAdapterModelRelationQuery
     {
@@ -37,13 +26,7 @@ class ModelRelationQuery extends Query implements DbAdapterModelRelationQuery
     }
 
     /**
-     * 预加载关联统计.
-     *
-     * @param mixed       $relation 关联方法名（支持字符串、数组）
-     * @param string|null $field    统计字段
-     * @param string|null $name     统计别名
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function withCount($relation, string $field = null, string $name = null): DbAdapterModelRelationQuery
     {
@@ -52,13 +35,7 @@ class ModelRelationQuery extends Query implements DbAdapterModelRelationQuery
     }
 
     /**
-     * 预加载关联求和.
-     *
-     * @param mixed       $relation 关联方法名（支持字符串、数组）
-     * @param string|null $field    求和字段
-     * @param string|null $name     求和别名
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function withSum($relation, string $field = null, string $name = null): DbAdapterModelRelationQuery
     {
@@ -69,13 +46,7 @@ class ModelRelationQuery extends Query implements DbAdapterModelRelationQuery
     }
 
     /**
-     * 预加载关联求平均值.
-     *
-     * @param mixed       $relation 关联方法名（支持字符串、数组）
-     * @param string|null $field    字段名
-     * @param string|null $name     别名
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function withAvg($relation, string $field = null, string $name = null): DbAdapterModelRelationQuery
     {
@@ -86,13 +57,7 @@ class ModelRelationQuery extends Query implements DbAdapterModelRelationQuery
     }
 
     /**
-     * 预加载关联求最小值.
-     *
-     * @param mixed       $relation 关联方法名（支持字符串、数组）
-     * @param string|null $field    字段名
-     * @param string|null $name     别名
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function withMin($relation, string $field = null, string $name = null): DbAdapterModelRelationQuery
     {
@@ -103,13 +68,7 @@ class ModelRelationQuery extends Query implements DbAdapterModelRelationQuery
     }
 
     /**
-     * 预加载关联求最大值.
-     *
-     * @param mixed       $relation 关联方法名（支持字符串、数组）
-     * @param string|null $field    字段名
-     * @param string|null $name     别名
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function withMax($relation, string $field = null, string $name = null): DbAdapterModelRelationQuery
     {
@@ -120,12 +79,7 @@ class ModelRelationQuery extends Query implements DbAdapterModelRelationQuery
     }
 
     /**
-     * 延迟预加载关联数据.
-     *
-     * @param mixed $relation 关联方法名（支持字符串、数组、闭包）
-     * @param mixed $callback 回调函数
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function load($relation, $callback = null): DbAdapterModelRelationQuery
     {
@@ -135,12 +89,7 @@ class ModelRelationQuery extends Query implements DbAdapterModelRelationQuery
     }
 
     /**
-     * 设置查询范围.
-     *
-     * @param string $scope 范围名称
-     * @param array  $args  参数
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function scope(string $scope, array $args = []): DbAdapterModelRelationQuery
     {

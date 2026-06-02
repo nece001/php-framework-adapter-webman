@@ -11,8 +11,22 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
-class Command extends SymfonyCommand implements ContractCommand
+abstract class Command extends SymfonyCommand implements ContractCommand
 {
+    /**
+     * 默认命令名称
+     *
+     * @var string
+     */
+    protected static $defaultName = '';
+
+    /**
+     * 默认命令描述
+     *
+     * @var string
+     */
+    protected static $defaultDescription = '';
+
     /**
      * @var InputInterface
      */
@@ -39,20 +53,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 处理命令
-     *
-     * @return void
-     */
-    public function handle(): void
-    {
-        // 子类实现
-    }
-
-    /**
-     * 获取命令行参数
-     *
-     * @param string $name
-     * @return mixed
+     * @inheritDoc
      */
     public function argument(string $name)
     {
@@ -60,10 +61,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 获取命令行选项
-     *
-     * @param string $name
-     * @return mixed
+     * @inheritDoc
      */
     public function option(string $name)
     {
@@ -71,11 +69,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 询问用户
-     *
-     * @param string $question
-     * @param mixed $default
-     * @return mixed
+     * @inheritDoc
      */
     public function ask(string $question, $default = null)
     {
@@ -85,11 +79,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 确认用户操作
-     *
-     * @param string $question
-     * @param bool $default
-     * @return bool
+     * @inheritDoc
      */
     public function confirm(string $question, bool $default = false): bool
     {
@@ -99,12 +89,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 选择用户操作
-     *
-     * @param string $question
-     * @param array $choices
-     * @param mixed $default
-     * @return mixed
+     * @inheritDoc
      */
     public function choice(string $question, array $choices, $default = null)
     {
@@ -114,10 +99,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 输出空行
-     *
-     * @param int $count
-     * @return void
+     * @inheritDoc
      */
     public function newLine(int $count = 1): void
     {
@@ -127,10 +109,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 输出消息（带换行）
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
     public function writeln(string $message): void
     {
@@ -138,10 +117,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 输出消息（不带换行）
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
     public function write(string $message): void
     {
@@ -149,10 +125,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 输出信息消息
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
     public function info(string $message): void
     {
@@ -162,10 +135,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 输出注释消息
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
     public function comment(string $message): void
     {
@@ -175,10 +145,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 输出问题消息
-     *
-     * @param string $question
-     * @return void
+     * @inheritDoc
      */
     public function question(string $question): void
     {
@@ -188,10 +155,7 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 输出警告消息
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
     public function warn(string $message): void
     {
@@ -201,15 +165,30 @@ class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * 输出错误消息
-     *
-     * @param string $message
-     * @return void
+     * @inheritDoc
      */
     public function error(string $message): void
     {
         $style = new OutputFormatterStyle('red');
         $this->output->getFormatter()->setStyle('error', $style);
         $this->output->writeln('<error>' . $message . '</error>');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addArgument(string $name, ?int $mode = null, string $description = '', $default = null, array $suggestedValues = []): self
+    {
+        parent::addArgument($name, $mode, $description, $default, $suggestedValues);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addOption(string $name, ?string $shortcut = null, ?int $mode = null, string $description = '', $default = null, array $suggestedValues = []): self
+    {
+        parent::addOption($name, $shortcut, $mode, $description, $default, $suggestedValues);
+        return $this;
     }
 }

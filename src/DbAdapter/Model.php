@@ -32,12 +32,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 设置单个属性值.
-     *
-     * @param string $name  属性名
-     * @param mixed  $value 属性值
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function setAttr(string $name, $value): DbAdapterModel
     {
@@ -46,11 +41,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 获取单个属性值.
-     *
-     * @param string $name 属性名
-     *
-     * @return mixed
+     * @inheritDoc
      */
     public function getAttr(string $name)
     {
@@ -85,11 +76,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 设置多个属性值.
-     *
-     * @param array $data 属性数据
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function data(array $data): DbAdapterModel
     {
@@ -98,11 +85,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 获取属性数据.
-     *
-     * @param string|null $name 属性名（留空返回全部数据）
-     *
-     * @return array|mixed
+     * @inheritDoc
      */
     public function getData(?string $name = null)
     {
@@ -111,11 +94,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 保存数据.
-     *
-     * @param array $data 数据
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function save(array $data = []): bool
     {
@@ -126,11 +105,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 强制更新数据.
-     *
-     * @param array $data 数据
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function forceUpdate(array $data = []): bool
     {
@@ -145,11 +120,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 删除数据.
-     *
-     * @param mixed $data 主键值或删除条件
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function delete($data = null): bool
     {
@@ -160,11 +131,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 获取原始数据.
-     *
-     * @param string $name 属性名（留空返回全部原始数据）
-     *
-     * @return mixed
+     * @inheritDoc
      */
     public function getOriginal(string $name = null)
     {
@@ -177,11 +144,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 设置主键值.
-     *
-     * @param mixed $value 主键值
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function setKey($value): DbAdapterModel
     {
@@ -190,9 +153,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 获取主键值.
-     *
-     * @return mixed
+     * @inheritDoc
      */
     public function getKey()
     {
@@ -200,9 +161,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 获取主键名.
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getKeyName(): string
     {
@@ -210,9 +169,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 获取数据表名.
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getTable(): string
     {
@@ -220,9 +177,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 获取模型名称.
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getModelName(): string
     {
@@ -236,11 +191,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 获取错误信息.
-     *
-     * @param bool $all 是否获取全部错误
-     *
-     * @return mixed
+     * @inheritDoc
      */
     public function getError(bool $all = false)
     {
@@ -251,11 +202,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 设置错误信息.
-     *
-     * @param mixed $error 错误信息（支持字符串或数组）
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function setError($error): DbAdapterModel
     {
@@ -266,14 +213,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 数据验证.
-     *
-     * @param array  $data  数据
-     * @param mixed  $rules 验证规则（支持数组或字符串场景名）
-     * @param array  $msg   错误信息
-     * @param string $scene 验证场景
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function validate(array $data = [], $rules = [], array $msg = [], string $scene = ''): bool
     {
@@ -284,11 +224,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 开启自动写入时间戳.
-     *
-     * @param bool $auto 是否自动写入
-     *
-     * @return $this
+     * @inheritDoc
      */
     public function autoWriteTimestamp(bool $auto = true): DbAdapterModel
     {
@@ -299,9 +235,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
-     * 获取查询对象.
-     *
-     * @return ModelRelationQuery
+     * @inheritDoc
      */
     public function query(): ModelRelationQuery
     {
