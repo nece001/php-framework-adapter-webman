@@ -14,7 +14,7 @@ class Query implements DbAdapterQuery
      *
      * @var ThinkQuery
      */
-    private ThinkQuery $query;
+    protected ThinkQuery $query;
 
     public function __construct(ThinkQuery $query)
     {
