@@ -177,7 +177,7 @@ abstract class Command extends SymfonyCommand implements ContractCommand
     /**
      * @inheritDoc
      */
-    public function addArgument(string $name, ?int $mode = null, string $description = '', $default = null, array $suggestedValues = []): self
+    public function addArg(string $name, ?int $mode = null, string $description = '', $default = null, array $suggestedValues = []): self
     {
         parent::addArgument($name, $mode, $description, $default, $suggestedValues);
         return $this;
@@ -186,7 +186,7 @@ abstract class Command extends SymfonyCommand implements ContractCommand
     /**
      * @inheritDoc
      */
-    public function addOption(string $name, ?string $shortcut = null, ?int $mode = null, string $description = '', $default = null, array $suggestedValues = []): self
+    public function addOpt(string $name, ?string $shortcut = null, ?int $mode = null, string $description = '', $default = null, array $suggestedValues = []): self
     {
         parent::addOption($name, $shortcut, $mode, $description, $default, $suggestedValues);
         return $this;
