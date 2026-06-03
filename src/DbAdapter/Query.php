@@ -666,6 +666,6 @@ class Query implements DbAdapterQuery
      */
     public function __toString(): string
     {
-        return (string)$this->query;
+        return $this->query->buildSql();
     }
 }
