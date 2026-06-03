@@ -13,6 +13,58 @@ class Request implements ContractRequest
      */
     private $request;
 
+    /**
+     * 动态属性存储
+     *
+     * @var array
+     */
+    private $attributes = [];
+
+    /**
+     * 设置动态属性
+     *
+     * @param string $name  属性名
+     * @param mixed  $value 属性值
+     * @return void
+     */
+    public function __set(string $name, $value): void
+    {
+        $this->attributes[$name] = $value;
+    }
+
+    /**
+     * 获取动态属性
+     *
+     * @param string $name 属性名
+     * @return mixed
+     */
+    public function __get(string $name)
+    {
+        return $this->attributes[$name] ?? null;
+    }
+
+    /**
+     * 检查动态属性是否存在
+     *
+     * @param string $name 属性名
+     * @return bool
+     */
+    public function __isset(string $name): bool
+    {
+        return isset($this->attributes[$name]);
+    }
+
+    /**
+     * 取消设置动态属性
+     *
+     * @param string $name 属性名
+     * @return void
+     */
+    public function __unset(string $name): void
+    {
+        unset($this->attributes[$name]);
+    }
+
     public function __construct()
     {
         $this->request = \request();
@@ -314,8 +366,8 @@ class Request implements ContractRequest
      */
     public function isSsl(): bool
     {
-        return $this->request->header('x-forwarded-proto') === 'https' || 
-               $this->request->header('x-scheme') === 'https';
+        return $this->request->header('x-forwarded-proto') === 'https' ||
+            $this->request->header('x-scheme') === 'https';
     }
 
     /**
@@ -490,6 +542,14 @@ class Request implements ContractRequest
      * @return string
      */
     public function pathinfo(): string
+    {
+        return $this->request->path();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function path(): string
     {
         return $this->request->path();
     }

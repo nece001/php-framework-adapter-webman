@@ -4,7 +4,7 @@ namespace Nece\Framework\Adapter\DbAdapter;
 
 use Closure;
 use Nece\Framework\Adapter\Contract\DbAdapter\Query as DbAdapterQuery;
-use Nece\Framework\Adapter\Paginator;
+use Nece\Framework\Adapter\DbAdapter\Paginator;
 use think\db\Query as ThinkQuery;
 
 class Query implements DbAdapterQuery
@@ -442,12 +442,13 @@ class Query implements DbAdapterQuery
     /**
      * @inheritDoc
      */
-    public function select(array $data = []): array
+    public function select(array $data = []): Collection
     {
         $result = $this->query->select($data);
+        $models = [];
+
         // 如果是 \think\Collection，转换为 Model 实例
         if ($result instanceof \think\Collection) {
-            $models = [];
             foreach ($result as $item) {
                 if ($item instanceof \support\think\Model) {
                     $models[] = new Model($item);
@@ -455,11 +456,9 @@ class Query implements DbAdapterQuery
                     $models[] = $item;
                 }
             }
-            return $models;
         }
 
-        // 如果是数组，直接返回
-        return (array) $result;
+        return new Collection($models);
     }
 
     /**
@@ -504,7 +503,6 @@ class Query implements DbAdapterQuery
             }
         }
 
-        // 创建通用分页器
         return new Paginator($items, $total, $currentPage, $page_size);
     }
 
