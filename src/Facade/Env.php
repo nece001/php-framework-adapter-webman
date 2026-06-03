@@ -52,6 +52,10 @@ class Env implements ContractEnv
             $value = config('app.app_env');
         }
 
-        return $value;
+        if(!$value) {
+            throw new \Exception('app_env is not set');
+        }
+
+        return strtolower(strval($value));
     }
 }
