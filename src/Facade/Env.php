@@ -1,4 +1,5 @@
 <?php
+
 namespace Nece\Framework\Adapter\Facade;
 
 use Nece\Framework\Adapter\Contract\Facade\Env as ContractEnv;
@@ -39,5 +40,18 @@ class Env implements ContractEnv
     public static function has($key): bool
     {
         return isset($_ENV[$key]) || isset($_SERVER[$key]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getAppEnv(): string
+    {
+        $value = \env('app.app_env');
+        if (!$value) {
+            $value = config('app.app_env');
+        }
+
+        return $value;
     }
 }
