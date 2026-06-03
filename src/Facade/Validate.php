@@ -2,7 +2,7 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
-use Nece\Framework\Adapter\Contract\Exception\ValidateException;
+use Nece\Framework\Adapter\Exception\ValidateException;
 use Nece\Framework\Adapter\Contract\Facade\Validate as ContractValidate;
 use support\validation\Validator;
 
