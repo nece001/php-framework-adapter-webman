@@ -2,6 +2,7 @@
 
 namespace Nece\Framework\Adapter\Facade;
 
+use Nece\Framework\Adapter\Contract\Exception\ValidateException;
 use Nece\Framework\Adapter\Contract\Facade\Validate as ContractValidate;
 use support\validation\Validator;
 
@@ -20,6 +21,10 @@ class Validate implements ContractValidate
      */
     public static function validate(array $data, array $validate, array $message = [], array $attributes = [], bool $batch = false): void
     {
-        Validator::make($data, $validate, $message, $attributes)->validate();
+        try {
+            Validator::make($data, $validate, $message, $attributes)->validate();
+        } catch (\Exception $e) {
+            throw new ValidateException($e->getMessage());
+        }
     }
 }
