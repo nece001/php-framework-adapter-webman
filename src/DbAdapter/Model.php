@@ -249,15 +249,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
         return $this->model->toArray();
     }
 
-    public function __get(string $name)
-    {
-        return $this->getAttr($name);
-    }
-
-    public function __set(string $name, $value)
-    {
-        $this->setAttr($name, $value);
-    }
+    
 
     /**
      * JsonSerializable 接口实现
@@ -318,5 +310,20 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
         $data = $this->model->getData();
         unset($data[$offset]);
         $this->model->data($data);
+    }
+
+    public function __get(string $name)
+    {
+        return $this->getAttr($name);
+    }
+
+    public function __set(string $name, $value)
+    {
+        $this->setAttr($name, $value);
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        return $this->model->$name(...$arguments);
     }
 }
