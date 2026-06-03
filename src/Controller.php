@@ -5,6 +5,7 @@ namespace Nece\Framework\Adapter;
 use Nece\Framework\Adapter\Contract\Controller as ContractController;
 use Nece\Framework\Adapter\Request;
 use support\Response;
+use Workerman\Protocols\Http\Session;
 
 class Controller implements ContractController
 {
@@ -122,6 +123,15 @@ class Controller implements ContractController
     /**
      * @inheritDoc
      */
+    public function pullSession(string $name, $default = null)
+    {
+        $value = $this->request()->session()->pull($name);
+        return $value ? $value : $default;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function setSession(string $name, $value)
     {
         $this->request()->session()->put($name, $value);
@@ -135,6 +145,15 @@ class Controller implements ContractController
     {
         $this->request()->session()->delete($name);
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setSessionLifeTime(int $life_time)
+    {
+        Session::$lifetime = $life_time;
+        Session::$cookieLifetime = $life_time;
     }
 
     /**
