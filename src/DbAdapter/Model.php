@@ -22,13 +22,13 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     /**
      * 创建模型实例.
      *
-     * @param mixed $dbModel 底层模型实例
+     * @param string $model_name 模型名称
      *
      * @return Model
      */
-    public static function instance($dbModel): DbAdapterModel
+    public static function instance(string $model_name): DbAdapterModel
     {
-        return new self($dbModel);
+        return new self(new $model_name());
     }
 
     /**
@@ -249,7 +249,45 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
         return $this->model->toArray();
     }
 
-    
+
+    /**
+     * 开启事务.
+     *
+     * @author nece001@163.com
+     * @create 2026-06-04 09:14:04
+     *
+     * @return void
+     */
+    public function startTrans(): void
+    {
+        $this->model->db()->startTrans();
+    }
+
+    /**
+     * 提交事务.
+     *
+     * @author nece001@163.com
+     * @create 2026-06-04 09:14:10
+     *
+     * @return void
+     */
+    public function commit(): void
+    {
+        $this->model->db()->commit();
+    }
+
+    /**
+     * 回滚事务.
+     *
+     * @author nece001@163.com
+     * @create 2026-06-04 09:14:15
+     *
+     * @return void
+     */
+    public function rollback(): void
+    {
+        $this->model->db()->rollback();
+    }
 
     /**
      * JsonSerializable 接口实现
