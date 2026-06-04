@@ -283,7 +283,14 @@ class Request implements ContractRequest
      */
     public function file(string $name = '')
     {
-        return $this->request->file($name);
+        $file = $this->request->file($name ? $name : null);
+        if ($file) {
+            if (is_array($file)) {
+                return UploadFile::instances($file);
+            }
+            return UploadFile::instance($file);
+        }
+        return null;
     }
 
     /**

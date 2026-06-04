@@ -190,4 +190,63 @@ class Controller implements ContractController
         unset($this->cookies[$name]);
         return $this;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function successPagedList(Paginator $page)
+    {
+        $data = [
+            'total' => $page->total(),
+            'page' => $page->currentPage(),
+            'page_size' => $page->pageSize(),
+            'pages' => $page->lastPage(),
+            'items' => $page->all(),
+        ];
+        return $this->success($data);
+    }
+
+    /**
+     * 返回成功数据
+     *
+     * @author nece001@163.com
+     * @create 2026-06-04 17:23:27
+     *
+     * @param mixed $data
+     * @return Response
+     */
+    public function success($data = null)
+    {
+        return $this->json(['code' => 0, 'status' => 'success', 'message' => 'success', 'data' => $data]);
+    }
+
+    /**
+     * 返回失败数据
+     *
+     * @author nece001@163.com
+     * @create 2026-06-04 17:23:43
+     *
+     * @param string $message
+     * @param string $code
+     * @param mixed $data
+     * @return Response
+     */
+    public function failure(string $message = 'failure', $code = '', $data = null)
+    {
+        return $this->json(['code' => $code, 'status' => 'failure', 'message' => $message, 'data' => $data]);
+    }
+
+    /**
+     * 返回异常数据
+     *
+     * @author nece001@163.com
+     * @create 2026-06-04 17:23:49
+     *
+     * @param \Exception $e
+     * @return Response
+     */
+    public function exception(\Exception $e)
+    {
+        return $this->failure($e->getMessage(), $e->getCode());
+    }
 }
