@@ -40,7 +40,11 @@ class Request implements ContractRequest
      */
     public function __get(string $name)
     {
-        return $this->attributes[$name] ?? null;
+        if (isset($this->attributes[$name])) {
+            return $this->attributes[$name];
+        }
+
+        return $this->request->$name;
     }
 
     /**
@@ -51,7 +55,7 @@ class Request implements ContractRequest
      */
     public function __isset(string $name): bool
     {
-        return isset($this->attributes[$name]);
+        return isset($this->attributes[$name]) || isset($this->request->$name);
     }
 
     /**
