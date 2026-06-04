@@ -4,7 +4,8 @@ namespace Nece\Framework\Adapter;
 
 use Nece\Framework\Adapter\Contract\Controller as ContractController;
 use Nece\Framework\Adapter\Request;
-use support\Response;
+use Nece\Framework\Adapter\Facade\Response;
+use support\Response as WebmanResponse;
 use Workerman\Protocols\Http\Session;
 
 class Controller implements ContractController
@@ -31,7 +32,7 @@ class Controller implements ContractController
      */
     public function response(string $body = '', int $status = 200, array $headers = [])
     {
-        $response = new Response($status, $headers, $body);
+        $response = Response::response($body, $status, $headers);
         return $this->addCookiesToResponse($response);
     }
 
@@ -40,7 +41,7 @@ class Controller implements ContractController
      */
     public function render(string $view, $data)
     {
-        return $this->addCookiesToResponse(\view($view, $data));
+        return $this->addCookiesToResponse(Response::view($view, $data));
     }
 
     /**
@@ -48,7 +49,7 @@ class Controller implements ContractController
      */
     public function redirect(string $url, int $code = 302)
     {
-        return $this->addCookiesToResponse(\redirect($url, $code));
+        return $this->addCookiesToResponse(Response::redirect($url, $code));
     }
 
     /**
@@ -56,7 +57,11 @@ class Controller implements ContractController
      */
     public function json($data, int $code = 200, array $headers = [])
     {
-        return $this->addCookiesToResponse(\json($data, $code, $headers));
+        $response = Response::json($data);
+        foreach ($headers as $key => $value) {
+            $response->withHeader($key, $value);
+        }
+        return $this->addCookiesToResponse($response);
     }
 
     /**
@@ -64,7 +69,11 @@ class Controller implements ContractController
      */
     public function xml($data, int $code = 200, array $headers = [])
     {
-        return $this->addCookiesToResponse(\xml($data, $code, $headers));
+        $response = Response::xml($data);
+        foreach ($headers as $key => $value) {
+            $response->withHeader($key, $value);
+        }
+        return $this->addCookiesToResponse($response);
     }
 
     /**
@@ -72,9 +81,9 @@ class Controller implements ContractController
      */
     public function download(string $file, string $name = null, array $headers = [])
     {
-        $response = new Response(200, $headers, file_get_contents($file));
-        if ($name) {
-            $response->withHeader('Content-Disposition', 'attachment; filename=' . $name);
+        $response = Response::download($file, $name);
+        foreach ($headers as $key => $value) {
+            $response->withHeader($key, $value);
         }
         return $this->addCookiesToResponse($response);
     }
@@ -84,13 +93,13 @@ class Controller implements ContractController
      */
     public function stream($stream, int $code = 200, array $headers = [])
     {
-        return $this->addCookiesToResponse(new Response($code, $headers, $stream));
+        return $this->addCookiesToResponse(new WebmanResponse($code, $headers, $stream));
     }
 
     /**
      * @inheritDoc
      */
-    protected function addCookiesToResponse(Response $response): Response
+    protected function addCookiesToResponse(WebmanResponse $response): WebmanResponse
     {
         foreach ($this->cookies as $cookie) {
             $response->cookie(
