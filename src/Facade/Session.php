@@ -25,7 +25,7 @@ class Session implements ContractSession
      */
     public static function set(string $key, $value): void
     {
-        \session([$key => $value]);
+        \request()->session()->put($key, $value);
     }
 
     /**

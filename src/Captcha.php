@@ -3,13 +3,12 @@
 namespace Nece\Framework\Adapter;
 
 use Nece\Framework\Adapter\Contract\Captcha as ContractCaptcha;
+use Nece\Framework\Adapter\Facade\Session;
 use Nece\Framework\Adapter\Request;
 use Webman\Captcha\CaptchaBuilder;
 
 class Captcha implements ContractCaptcha
 {
-    private $phrase;
-
     /**
      * @inheritDoc
      */
@@ -20,7 +19,10 @@ class Captcha implements ContractCaptcha
         // 生成验证码
         $builder->build();
         // 将验证码的值存储到session中
-        $this->phrase = strtolower($builder->getPhrase());
+        $phrase = strtolower($builder->getPhrase());
+
+        Session::set('captcha', $phrase);
+
         // 输出验证码二进制数据
         return $builder->get();
     }
@@ -28,8 +30,11 @@ class Captcha implements ContractCaptcha
     /**
      * @inheritDoc
      */
-    public function getPhrase(): string
+    public function check(string $phrase): bool
     {
-        return $this->phrase;
+        $value = Session::get('captcha');
+        Session::delete('captcha');
+
+        return strtolower($phrase) === $value;
     }
 }
