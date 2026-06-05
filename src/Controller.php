@@ -213,11 +213,12 @@ class Controller implements ContractController
      * @create 2026-06-04 17:23:27
      *
      * @param mixed $data
+     * @param string $message 消息内容
      * @return Response
      */
-    public function success($data = null)
+    public function success($data = null, string $message = 'success')
     {
-        return $this->json(['code' => 0, 'status' => 'success', 'message' => 'success', 'data' => $data]);
+        return $this->json(['code' => 0, 'status' => 'success', 'message' => $message, 'data' => $data]);
     }
 
     /**
