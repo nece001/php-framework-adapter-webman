@@ -52,10 +52,18 @@ class Env implements ContractEnv
             $value = config('app.app_env');
         }
 
-        if(!$value) {
+        if (!$value) {
             throw new \Exception('app_env is not set');
         }
 
         return strtolower(strval($value));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function getRootPath(): string
+    {
+        return \base_path();
     }
 }
