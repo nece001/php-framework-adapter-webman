@@ -61,4 +61,20 @@ class Session implements ContractSession
     {
         return \request()->session()->has($key);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public static function put($key, $value = null): void
+    {
+        \request()->session()->put($key, $value);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function pull(string $key)
+    {
+        return \request()->session()->pull($key);
+    }
 }
