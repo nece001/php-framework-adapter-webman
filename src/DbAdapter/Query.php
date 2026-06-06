@@ -484,7 +484,7 @@ class Query implements DbAdapterQuery
     /**
      * @inheritDoc
      */
-    public function paginate(int $page = 1, int $page_size = 15, array $options = []): Paginator
+    public function paginate(int $page_size = 15, int $page = 1, array $options = []): Paginator
     {
         // 使用框架提供的分页功能
         $thinkPaginator = $this->query->paginate($page_size, false, ['page' => $page]);
