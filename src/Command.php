@@ -53,55 +53,88 @@ abstract class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * @inheritDoc
+     * 处理命令（抽象方法，子类必须实现）
+     *
+     * @return void
      */
-    public function argument(string $name)
+    abstract public function handle();
+
+    /**
+     * 获取命令行参数
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function getArg($name)
     {
         return $this->input->getArgument($name);
     }
 
     /**
-     * @inheritDoc
+     * 获取命令行选项
+     *
+     * @param string $name
+     * @return mixed
      */
-    public function option(string $name)
+    public function getOpt($name)
     {
         return $this->input->getOption($name);
     }
 
     /**
-     * @inheritDoc
+     * 询问用户
+     *
+     * @param string $question
+     * @param mixed $default
+     * @return mixed
      */
-    public function ask(string $question, $default = null)
+    public function showAsk($question, $default = null)
     {
         $helper = $this->getHelper('question');
-        $questionObj = new Question($question, $default);
-        return $helper->ask($this->input, $this->output, $questionObj);
+        $question = new Question($question, $default);
+        return $helper->ask($this->input, $this->output, $question);
     }
 
     /**
-     * @inheritDoc
+     * 确认用户操作
+     *
+     * @param string $question
+     * @param bool $default
+     * @return bool
      */
-    public function confirm(string $question, bool $default = false): bool
+    public function showConfirm($question, $default = false)
     {
         $helper = $this->getHelper('question');
-        $questionObj = new ConfirmationQuestion($question, $default);
-        return $helper->ask($this->input, $this->output, $questionObj);
+        $question = new ConfirmationQuestion($question, $default);
+        return $helper->ask($this->input, $this->output, $question);
     }
 
     /**
-     * @inheritDoc
+     * 选择用户操作
+     *
+     * @param string $question
+     * @param array $choices
+     * @param mixed $default
+     * @param int|null $attempts
+     * @param bool $multiple
+     * @return mixed
      */
-    public function choice(string $question, array $choices, $default = null)
+    public function showChoice($question, array $choices, $default = null, $attempts = null, $multiple = false)
     {
         $helper = $this->getHelper('question');
-        $questionObj = new ChoiceQuestion($question, $choices, $default);
-        return $helper->ask($this->input, $this->output, $questionObj);
+        $question = new ChoiceQuestion($question, $choices, $default);
+        $question->setMaxAttempts($attempts);
+        $question->setMultiselect($multiple);
+        return $helper->ask($this->input, $this->output, $question);
     }
 
     /**
-     * @inheritDoc
+     * 输出空行
+     *
+     * @param int $count
+     * @return void
      */
-    public function newLine(int $count = 1): void
+    public function showLine($count = 1)
     {
         for ($i = 0; $i < $count; $i++) {
             $this->output->writeln('');
@@ -109,86 +142,90 @@ abstract class Command extends SymfonyCommand implements ContractCommand
     }
 
     /**
-     * @inheritDoc
+     * 输出信息消息
+     *
+     * @param string $message
+     * @return void
      */
-    public function writeln(string $message): void
+    public function showInfo($message)
     {
-        $this->output->writeln($message);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function write(string $message): void
-    {
-        $this->output->write($message);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function info(string $message): void
-    {
-        $style = new OutputFormatterStyle('green');
-        $this->output->getFormatter()->setStyle('info', $style);
         $this->output->writeln('<info>' . $message . '</info>');
     }
 
     /**
-     * @inheritDoc
+     * 输出注释消息
+     *
+     * @param string $message
+     * @return void
      */
-    public function comment(string $message): void
+    public function showComment($message)
     {
-        $style = new OutputFormatterStyle('blue');
-        $this->output->getFormatter()->setStyle('comment', $style);
         $this->output->writeln('<comment>' . $message . '</comment>');
     }
 
     /**
-     * @inheritDoc
+     * 输出问题消息
+     *
+     * @param string $question
+     * @return void
      */
-    public function question(string $question): void
+    public function showQuestion($question)
     {
-        $style = new OutputFormatterStyle('cyan');
-        $this->output->getFormatter()->setStyle('question', $style);
         $this->output->writeln('<question>' . $question . '</question>');
     }
 
     /**
-     * @inheritDoc
+     * 输出警告消息
+     *
+     * @param string $message
+     * @return void
      */
-    public function warn(string $message): void
+    public function showWarn($message)
     {
-        $style = new OutputFormatterStyle('yellow');
-        $this->output->getFormatter()->setStyle('warning', $style);
         $this->output->writeln('<warning>' . $message . '</warning>');
     }
 
     /**
-     * @inheritDoc
+     * 输出错误消息
+     *
+     * @param string $message
+     * @return void
      */
-    public function error(string $message): void
+    public function showError($message)
     {
-        $style = new OutputFormatterStyle('red');
-        $this->output->getFormatter()->setStyle('error', $style);
         $this->output->writeln('<error>' . $message . '</error>');
     }
 
     /**
-     * @inheritDoc
+     * 添加命令行参数
+     *
+     * @param string $name 参数名称
+     * @param int|null $mode 参数模式（ARGUMENT_REQUIRED/ARGUMENT_OPTIONAL/ARGUMENT_IS_ARRAY）
+     * @param string $description 参数描述
+     * @param mixed $default 默认值
+     * @param array $suggestedValues 输入补全的值
+     * @return $this
      */
     public function addArg(string $name, ?int $mode = null, string $description = '', $default = null, array $suggestedValues = []): self
     {
-        parent::addArgument($name, $mode, $description, $default, $suggestedValues);
+        $this->addArgument($name, $mode, $description, $default, $suggestedValues);
         return $this;
     }
 
     /**
-     * @inheritDoc
+     * 添加命令行选项
+     *
+     * @param string $name 选项名称
+     * @param string|null $shortcut 快捷方式
+     * @param int|null $mode 选项模式（OPTION_VALUE_NONE/OPTION_VALUE_REQUIRED等）
+     * @param string $description 选项描述
+     * @param mixed $default 默认值
+     * @param array $suggestedValues 输入补全的值
+     * @return $this
      */
     public function addOpt(string $name, ?string $shortcut = null, ?int $mode = null, string $description = '', $default = null, array $suggestedValues = []): self
     {
-        parent::addOption($name, $shortcut, $mode, $description, $default, $suggestedValues);
+        $this->addOption($name, $shortcut, $mode, $description, $default, $suggestedValues);
         return $this;
     }
 }
