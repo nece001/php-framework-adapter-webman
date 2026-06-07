@@ -245,4 +245,12 @@ class UploadFile implements ContractUploadFile
     {
         return $this->upload_file->getRealPath();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRealUploadFile()
+    {
+        return $this->upload_file;
+    }
 }
