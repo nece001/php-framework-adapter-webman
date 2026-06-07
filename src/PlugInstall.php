@@ -41,10 +41,7 @@ class PlugInstall
                 mkdir($config_path, 0777, true);
             }
 
-
-            echo $source . "\n";
-            
-            copy_dir($source, $config_path);
+            copy_dir($source, $config_path, true);
             echo "Create $dest\n";
         }
     }
