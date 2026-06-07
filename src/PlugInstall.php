@@ -41,6 +41,8 @@ class PlugInstall
                 mkdir($config_path, 0777, true);
             }
 
+            echo '安装：' . $dest . PHP_EOL;
+
             copy_dir($source, $config_path, true);
             echo "Create $dest\n";
         }
