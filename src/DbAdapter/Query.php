@@ -6,6 +6,7 @@ use Closure;
 use Nece\Framework\Adapter\Contract\DbAdapter\Query as DbAdapterQuery;
 use Nece\Framework\Adapter\DbAdapter\Paginator;
 use think\db\Query as ThinkQuery;
+use Nece\Framework\Adapter\Contract\DbAdapter\Model as ModelInterface;
 
 class Query implements DbAdapterQuery
 {
@@ -135,27 +136,27 @@ class Query implements DbAdapterQuery
     /**
      * @inheritDoc
      */
-    public function join(string $join, string $condition = null, string $type = 'INNER', array $bind = []): DbAdapterQuery
+    public function join(ModelInterface $model, string $condition = null, string $type = 'INNER', array $bind = []): DbAdapterQuery
     {
-        $this->query->join($join, $condition, $type, $bind);
+        $this->query->join($model->getTable(), $condition, $type, $bind);
         return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function leftJoin(string $join, string $condition = null, array $bind = []): DbAdapterQuery
+    public function leftJoin(ModelInterface $model, string $condition = null, array $bind = []): DbAdapterQuery
     {
-        $this->query->leftJoin($join, $condition, $bind);
+        $this->query->leftJoin($model->getTable(), $condition, $bind);
         return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function rightJoin(string $join, string $condition = null, array $bind = []): DbAdapterQuery
+    public function rightJoin(ModelInterface $model, string $condition = null, array $bind = []): DbAdapterQuery
     {
-        $this->query->rightJoin($join, $condition, $bind);
+        $this->query->rightJoin($model->getTable(), $condition, $bind);
         return $this;
     }
 
@@ -405,9 +406,9 @@ class Query implements DbAdapterQuery
     /**
      * @inheritDoc
      */
-    public function page(int $page, int $listRows = null): DbAdapterQuery
+    public function page(int $page, int $page_size = null): DbAdapterQuery
     {
-        $this->query->page($page, $listRows);
+        $this->query->page($page, $page_size);
         return $this;
     }
 

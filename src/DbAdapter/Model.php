@@ -20,6 +20,23 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
     }
 
     /**
+     * @inheritDoc
+     */
+    public function setAlias(string $alias): DbAdapterModel
+    {
+        $this->model->alias($alias);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAlias(): string
+    {
+        return $this->model->getAlias();
+    }
+
+    /**
      * 创建模型实例.
      *
      * @param string $model_name 模型名称
