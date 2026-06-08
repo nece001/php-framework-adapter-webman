@@ -138,7 +138,13 @@ class Query implements DbAdapterQuery
      */
     public function join(ModelInterface $model, string $condition = null, string $type = 'INNER', array $bind = []): DbAdapterQuery
     {
-        $this->query->join($model->getTable(), $condition, $type, $bind);
+        $table = $model->getTable();
+        $alias = $model->getAlias();
+        if ($alias) {
+            $table = $table . ' ' . $alias;
+        }
+
+        $this->query->join($table, $condition, $type, $bind);
         return $this;
     }
 
@@ -147,7 +153,7 @@ class Query implements DbAdapterQuery
      */
     public function leftJoin(ModelInterface $model, string $condition = null, array $bind = []): DbAdapterQuery
     {
-        $this->query->leftJoin($model->getTable(), $condition, $bind);
+        $this->join($model, $condition, 'LEFT', $bind);
         return $this;
     }
 
@@ -156,16 +162,7 @@ class Query implements DbAdapterQuery
      */
     public function rightJoin(ModelInterface $model, string $condition = null, array $bind = []): DbAdapterQuery
     {
-        $this->query->rightJoin($model->getTable(), $condition, $bind);
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fullJoin(string $join, string $condition = null, array $bind = []): DbAdapterQuery
-    {
-        $this->query->fullJoin($join, $condition, $bind);
+        $this->join($model, $condition, 'RIGHT', $bind);
         return $this;
     }
 

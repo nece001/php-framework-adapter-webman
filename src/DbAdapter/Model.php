@@ -14,6 +14,8 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
      */
     private BaseModel $model;
 
+    protected $alias;
+
     public function __construct(BaseModel $model)
     {
         $this->model = $model;
@@ -24,7 +26,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
      */
     public function setAlias(string $alias): DbAdapterModel
     {
-        $this->model->alias($alias);
+        $this->alias = $alias;
         return $this;
     }
 
@@ -33,7 +35,7 @@ class Model implements DbAdapterModel, \JsonSerializable, \ArrayAccess
      */
     public function getAlias(): string
     {
-        return $this->model->getAlias();
+        return $this->alias;
     }
 
     /**
