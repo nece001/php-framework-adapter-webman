@@ -29,9 +29,6 @@ class Route implements ContractRouteFacade
                     if ($name) {
                         $rounte->name($name);
                     }
-                    if ($match) {
-                        // $rounte->completeMatch();
-                    }
                 }
             }
         }
