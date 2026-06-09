@@ -21,16 +21,16 @@ class Route implements ContractRouteFacade
                 foreach ($methods as $method) {
                     $path = $prefix . '/' . ltrim($method['path'], '/');
                     $action = $method['action'];
-                    $method = $method['method'] ?? 'get';
                     $name = $method['name'] ?? '';
                     $match = $method['match'] ?? false;
+                    $mtd = $method['method'] ?? 'get';
 
-                    $rounte = WebmanRoute::add($method, $path, [$controller_class, $action]);
+                    $rounte = WebmanRoute::add($mtd, $path, [$controller_class, $action]);
                     if ($name) {
                         $rounte->name($name);
                     }
                     if ($match) {
-                        $rounte->completeMatch();
+                        // $rounte->completeMatch();
                     }
                 }
             }
@@ -42,6 +42,9 @@ class Route implements ContractRouteFacade
      */
     public static function url(string $name, array $params = []): string
     {
-        return route($name, $params);
+        $url = route($name, $params);
+
+        // 把编码后的{}还原
+        return str_replace(['%7B', '%7D'], ['{', '}'], $url);
     }
 }
