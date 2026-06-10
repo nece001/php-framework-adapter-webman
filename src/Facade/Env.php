@@ -15,7 +15,8 @@ class Env implements ContractEnv
      */
     public static function get($key, $default = null)
     {
-        return \env($key, $default);
+        $value = config('app.' . $key, $default);
+        return $value;
     }
 
     /**
