@@ -19,12 +19,17 @@ class Route implements ContractRouteFacade
                 $controller_class = $controller['controller'];
                 $methods = $controller['methods'];
                 foreach ($methods as $method) {
-                    $path = $prefix . '/' . ltrim($method['path'], '/');
+                    $path = ltrim($method['path'], '/');
                     $action = $method['action'];
                     $name = $method['name'] ?? '';
                     $match = $method['match'] ?? false;
-                    $mtd = $method['method'] ?? 'get';
+                    $mtd = strtoupper($method['method'] ?? 'get');
 
+                    if (!$path) {
+                        WebmanRoute::add($mtd, $prefix, [$controller_class, $action]);
+                    }
+
+                    $path = $prefix . '/' . $path;
                     $rounte = WebmanRoute::add($mtd, $path, [$controller_class, $action]);
                     if ($name) {
                         $rounte->name($name);
