@@ -70,4 +70,17 @@ class Response implements ResponseContract
     {
         return \not_found();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public static function buildData($code, $status, $message, $data = [])
+    {
+        return [
+            'code' => $code,
+            'status' => $status,
+            'message' => $message,
+            'data' => $data,
+        ];
+    }
 }
