@@ -3,7 +3,7 @@
 namespace Nece\Framework\Adapter\Facade;
 
 use Nece\Framework\Adapter\Contract\Facade\Response as ResponseContract;
-use Webman\Http\Response as HttpResponse;
+use support\Response as WebmanResponse;
 
 class Response implements ResponseContract
 {
@@ -15,7 +15,7 @@ class Response implements ResponseContract
     public static function json($data, int $status = 200, array $headers = [], array $options = [])
     {
         $options = empty($options) ? JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR : $options;
-        $response = new HttpResponse($status, array_merge(['Content-Type' => 'application/json'], $headers), json_encode($data, $options));
+        $response = new WebmanResponse($status, array_merge(['Content-Type' => 'application/json'], $headers), json_encode($data, $options));
         return $response;
     }
 
@@ -24,7 +24,7 @@ class Response implements ResponseContract
         if ($xml instanceof \SimpleXMLElement) {
             $xml = $xml->asXML();
         }
-        $response = new HttpResponse($status, array_merge(['Content-Type' => 'text/xml'], $headers), $xml);
+        $response = new WebmanResponse($status, array_merge(['Content-Type' => 'text/xml'], $headers), $xml);
         return $response;
     }
 
@@ -34,7 +34,7 @@ class Response implements ResponseContract
         if (!is_scalar($data) && null !== $data) {
             $data = json_encode($data);
         }
-        $response = new HttpResponse($status, $headers, "$callbackName($data)");
+        $response = new WebmanResponse($status, $headers, "$callbackName($data)");
         return $response;
     }
 
@@ -54,7 +54,7 @@ class Response implements ResponseContract
 
     public static function download(string $filename, string $name = '', bool $content = false, int $expire = 180)
     {
-        $response = new HttpResponse();
+        $response = new WebmanResponse();
         if ($content) {
             $response->header('Content-Type', 'application/octet-stream');
             if ($name) {
