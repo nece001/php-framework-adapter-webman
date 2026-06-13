@@ -3,77 +3,78 @@
 namespace Nece\Framework\Adapter\Facade;
 
 use Nece\Framework\Adapter\Contract\Facade\Response as ResponseContract;
+use Webman\Http\Response as HttpResponse;
 
 class Response implements ResponseContract
 {
-    /**
-     * @inheritDoc
-     */
     public static function response(string $body = '', int $status = 200, array $headers = [])
     {
-        return \response($body, $status, $headers);
+        return response($body, $status, $headers);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function json($data, int $options = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)
+    public static function json($data, int $status = 200, array $headers = [], array $options = [])
     {
-        return \json($data, $options);
+        $options = empty($options) ? JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR : $options;
+        $response = new HttpResponse($status, array_merge(['Content-Type' => 'application/json'], $headers), json_encode($data, $options));
+        return $response;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function xml($xml)
+    public static function xml($xml, int $status = 200, array $headers = [], array $options = [])
     {
-        return \xml($xml);
+        if ($xml instanceof \SimpleXMLElement) {
+            $xml = $xml->asXML();
+        }
+        $response = new HttpResponse($status, array_merge(['Content-Type' => 'text/xml'], $headers), $xml);
+        return $response;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function jsonp($data, string $callback_name = 'callback')
+    public static function jsonp($data, int $status = 200, array $headers = [], array $options = [])
     {
-        return \jsonp($data, $callback_name);
+        $callbackName = isset($options['callback']) ? $options['callback'] : 'callback';
+        if (!is_scalar($data) && null !== $data) {
+            $data = json_encode($data);
+        }
+        $response = new HttpResponse($status, $headers, "$callbackName($data)");
+        return $response;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function redirect(string $location, int $status = 302, array $headers = [])
+    public static function redirect(string $location, int $status = 302)
     {
-        return \redirect($location, $status, $headers);
+        return redirect($location, $status);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function view(mixed $template = null, array $vars = [], ?string $app = null, ?string $plugin = null)
+    public static function view(mixed $template = null, array $vars = [], int $status = 200)
     {
-        return \view($template, $vars, $app, $plugin);
+        $viewResponse = view($template, $vars);
+        if ($status !== 200) {
+            $viewResponse->withStatus($status);
+        }
+        return $viewResponse;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function download(string $file_path, ?string $filename = null)
+    public static function download(string $filename, string $name = '', bool $content = false, int $expire = 180)
     {
-        $response = new \support\Response();
-        return $response->download($file_path, $filename ?? '');
+        $response = new HttpResponse();
+        if ($content) {
+            $response->header('Content-Type', 'application/octet-stream');
+            if ($name) {
+                $name = str_replace(['"', "\r", "\n", "\0"], '', $name);
+                $response->header('Content-Disposition', "attachment; filename=\"$name\"");
+            }
+            $response->header('Content-Length', strlen($filename));
+            $response->header('Cache-Control', "max-age=$expire");
+            $response->withBody($filename);
+        } else {
+            $response->download($filename, $name);
+        }
+        return $response;
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function notFound()
     {
-        return \not_found();
+        return not_found();
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function buildData($code, $status, $message, $data = [])
     {
         return [
